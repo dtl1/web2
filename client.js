@@ -3,12 +3,19 @@ fetch("api/getHostName").
     then(res => res.json()).
     then(res => document.getElementById("hostname").innerHTML = res["hostname"])
 
-fetch("api/getDirName").
+
+makeRequest("/");
+getDirName();
+
+
+function getDirName(){
+    fetch("api/getDirName").
     then(res => res.text()).
     then(res => document.getElementById("dirName").innerHTML = res)
+}
 
 
-makeRequest("/")
+
 
 function makeRequest(dir){
 
@@ -31,7 +38,10 @@ function makeRequest(dir){
         then(res => res.json()).
         then(res => {
 
-            let strVar = "";
+
+            let strVar ="<div id =\"dirTable\">";
+
+            strVar += generateTableHeader();
             let allFiles = res.info.files;
 
 	        for(let file in allFiles){
@@ -49,21 +59,23 @@ function makeRequest(dir){
                     
                     
                     if(key === "filename" && directory === true){
-                        value = "<label id=\"dirButton\" onclick=\"newDir("+value+")\" >" + value + "<\/label>";
+                        //value = "<label id=\"dirButton\" onclick=\"newDir("+value+")\" >" + value + "<\/label>";
+                        value = "<label id=\"dirButton\" onclick=\"newDir('"+value+"')\" >" + value + "<\/label>";
                     }
                     
                 
 			        strVar += "<"+key+">" + value + "<\/"+key+">";
 		        }
 
-		        strVar += "<\/file>";
+                strVar += "<\/file>";
+            
 
-	        }
+            }
+
+            strVar += "<\/div>";
 
 	        document.getElementById("dirTable").outerHTML = strVar;
     
-
-
         });
 
 }
@@ -72,10 +84,26 @@ function makeRequest(dir){
 
 
 function newDir(dir){
-    
-
+    makeRequest("/" + dir);
+    getDirName();
 }
 
+
+function generateTableHeader(){
+    let strVar = "";
+        
+    strVar += "<file>";
+        strVar += "<filename class=\"heading\">filename<\/filename>";
+        strVar += "<type class=\"heading\">type<\/type>";
+        strVar += "<size class=\"heading\">size (bytes)<\/size>";
+        strVar += "<atime class=\"heading\">atime<\/atime>";
+        strVar += "<mtime class=\"heading\">mtime<\/mtime>";
+        strVar += "<ctime class=\"heading\">ctime<\/ctime>";
+        strVar += "<birthtime class=\"heading\">birthtime<\/birthtime>";
+    strVar += "<\/file>";
+
+    return strVar;
+}
 
 
 
