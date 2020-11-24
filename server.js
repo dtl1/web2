@@ -15,14 +15,10 @@ const script_file = "client.js";
 
 const dir_parent_path = "/cs/home/dtl1/nginx_default/";
 
-var current_dir_path = dir_parent_path;
-var current_dir = "";
-
 
 //process command line argument
 const root = process.argv.slice(2, 3)[0];
 console.log("root path: " + root);
-
 
 
 //if user hasn't provided a root path
@@ -63,7 +59,7 @@ app.get("/api/getHostname", (req, res) => {
 
 
 app.get("/api/getDirName", (req, res) => {
-	res.send(current_dir);
+	res.send(root);
 })
 
 //////////////////////////////////////////////////////////////////////// 
@@ -75,12 +71,9 @@ app.post("/api", (req, res) => {
 	var dir = req.body.dirpath;
 
 	if(dir === "/")
-	dir = root;
+	dir += root;
 
-	if(!(current_dir_path.endsWith(dir))){
-		current_dir_path = current_dir_path + dir;
-		current_dir = current_dir + dir;
-	}
+	
 	
 	const response = {
 		response: "dirinfo",
@@ -92,9 +85,11 @@ app.post("/api", (req, res) => {
 
 	}
 
+	let dirPath = dir_parent_path + dir;
+
 		
-	fs.readdirSync(current_dir_path).forEach(file => {
-		let fileInfo = getFileInfo(current_dir_path, file);
+	fs.readdirSync(dirPath).forEach(file => {
+		let fileInfo = getFileInfo(dirPath, file);
 		response["info"]["files"][file] = fileInfo;
 	});
 
