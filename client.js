@@ -1,23 +1,35 @@
-
-fetch("api/getHostName").
-    then(res => res.json()).
-    then(res => document.getElementById("hostname").innerHTML = res["hostname"])
+var parent_dir;
+var current_dir;
 
 
 makeRequest("/");
 getDirName();
+parent_dir = current_dir;
 
 
 function getDirName(){
     fetch("api/getDirName").
     then(res => res.text()).
-    then(res => document.getElementById("dirName").innerHTML = res)
+    then(res => document.getElementById("dirName").innerHTML = res).
+    then(res => current_dir = res)
 }
 
 
-
+function getHostName(){
+    fetch("api/getHostName").
+    then(res => res.json()).
+    then(res => document.getElementById("hostname").innerHTML = res["hostname"])
+}
 
 function makeRequest(dir){
+
+    if(dir != "/"){
+        dir = current_dir + dir;
+        parent_dir = current_dir;
+        current_dir = dir;
+
+        document.getElementById("dirName").innerHTML = dir;
+    }
 
     const body = {
         request: "dirinfo",
@@ -80,14 +92,13 @@ function makeRequest(dir){
 
 }
 
-
-
-
 function newDir(dir){
     makeRequest("/" + dir);
-    getDirName();
 }
 
+function prevDir(){
+    makeRequest(parent_dir);
+}
 
 function generateTableHeader(){
     let strVar = "";
