@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel=stylesheet href="page.css" type="text/css">
+        <script src="client.js"></script>
+        
+        <title>
+            Directory Lister (Remote File System Browser)
+        </title>
+
+        <h1>
+            Directory Lister (Remote File System Browser)
+        </h1>
+        
+    </head>
+    <body>
+        <p>
+            Retreived directory: <label id="dirName">???</label>
+        </p>
+        <hr>
+        
+        <directory_list>
+            <file>
+                <filename class="heading">filename</filename>
+                <type class="heading">type</type>
+                <size class="heading">size (bytes)</size>
+                <atime class="heading">atime</atime>
+                <mtime class="heading">mtime</mtime>
+                <ctime class="heading">ctime</ctime>
+                <birthtime class="heading">birthtime</birthtime>
+            </file>
+        
+            <div id ="dirTable"></div>
+            
+        </directory_list>
+
+    </body>
+</html>
