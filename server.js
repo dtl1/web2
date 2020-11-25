@@ -11,9 +11,10 @@ const port = process.getuid();
 
 const page_css_file = "page.css";
 const page_html_file = "page.html";
-const script_file = "client.js";
+const script_file = "dir_list_client.js";
 
-const dir_parent_path = "/cs/home/dtl1/nginx_default/";
+//remove "src" from __dirname
+const dir_parent_path = __dirname.slice(0, (__dirname.length - 3));
 
 
 //process command line argument
@@ -30,6 +31,8 @@ if(root == undefined){
 
 
 app.listen(port, () => console.log("Listening at port: " + port));
+
+
 
 
 ///////////////////////////////// get handlers ///////////////////////////////// 
@@ -62,8 +65,12 @@ app.get("/api/getDirName", (req, res) => {
 	res.send(root);
 })
 
-//////////////////////////////////////////////////////////////////////// 
+///////////////////////////////// get handlers ///////////////////////////////// 
  
+ 
+
+
+///////////////////////////////// post handlers ////////////////////////////////
 
 app.post("/api", (req, res) => {
 	console.log("Recieved post request from client");
@@ -97,10 +104,12 @@ app.post("/api", (req, res) => {
 
 })
 
+///////////////////////////////// post handlers ////////////////////////////////
+ 
 
 
-
-//////////////////////////////////////////////////////////////////////// 
+///////////////////////////////// other functions ////////////////////////////////
+ 
 
 
 function getFileInfo(directoryname, filename) {
@@ -135,4 +144,5 @@ function getFileInfo(directoryname, filename) {
 }
 
 
+///////////////////////////////// other functions ////////////////////////////////
 
