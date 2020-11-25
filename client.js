@@ -1,5 +1,9 @@
 var dirHistory = [];
-
+var tableRowsStrings = [];
+var tableRowsJSON = {};
+var headers = ["filename", "type", "size", "atime", "mtime", "ctime", "birthtime"];
+var sorts = [];
+var onDesc = false;
 
 makeRequest("/");
 getDirName();
@@ -55,10 +59,18 @@ function makeRequest(dir){
         then(res => {
 
 
-            let strVar ="<div id =\"dirTable\">";
+            let tableStrVar ="<div id =\"dirTable\">";
 
-            strVar += generateTableHeader();
+            for(let i = 0; i < 7; i++){
+                sorts[i] = "sortAsc";
+            }
+
+            tableStrVar += generateTableHeader();
+
             let allFiles = res.info.files;
+            tableRowsJSON = allFiles;
+
+            tableRowsStrings = [];  
 
 	        for(let file in allFiles){
 
@@ -67,7 +79,8 @@ function makeRequest(dir){
                 if(allFiles[file]["type"] === "directory")
                     directory = true;
                 
-	
+
+                let strVar = "";
 		        strVar += "<file>";
 		
 		        for(var key in allFiles[file]){
@@ -75,7 +88,6 @@ function makeRequest(dir){
                     
                     
                     if(key === "filename" && directory === true){
-                        //value = "<label id=\"dirButton\" onclick=\"newDir("+value+")\" >" + value + "<\/label>";
                         value = "<directory><label id=\"dirButton\" onclick=\"newDir('"+value+"')\" >" + value + "<\/label><\/directory>";
                     }
                     
@@ -85,12 +97,13 @@ function makeRequest(dir){
 
                 strVar += "<\/file>";
             
-
+                tableRowsStrings[tableRowsStrings.length] = strVar;
+                tableStrVar += strVar;
             }
 
-            strVar += "<\/div>";
+            tableStrVar += "<\/div>";
 
-	        document.getElementById("dirTable").outerHTML = strVar;
+	        document.getElementById("dirTable").outerHTML = tableStrVar;
     
         });
 
@@ -120,18 +133,13 @@ function generateTableHeader(){
     let strVar = "";
         
     strVar += "<file>";
-        strVar += "<filename class=\"heading\">filename<\/filename>";
-        strVar += "<type class=\"heading\">type<\/type>";
-        strVar += "<size class=\"heading\">size (bytes)<\/size>";
-        strVar += "<atime class=\"heading\">atime<\/atime>";
-        strVar += "<mtime class=\"heading\">mtime<\/mtime>";
-        strVar += "<ctime class=\"heading\">ctime<\/ctime>";
-        strVar += "<birthtime class=\"heading\">birthtime<\/birthtime>";
+        for(let i = 0; i < headers.length; i++){
+            strVar += "<"+headers[i]+" class=\"heading\" onclick='"+sorts[i]+"(\""+headers[i]+"\")'>"+headers[i]+"<\/"+headers[i]+">";
+        }
     strVar += "<\/file>";
 
     return strVar;
 }
-
 
 function handleClick(checked, name) {
     var column = document.getElementsByTagName(name);   
@@ -152,7 +160,93 @@ function handleClick(checked, name) {
     }
 }
 
+function sortAsc(heading){
+
+    for(let i = 0; i < sorts.length; i++){
+        sorts[i] = "sortAsc" ;
+    }
+
+    if(onDesc){
+        onDesc = false;
+        makeRequest(dirHistory[dirHistory.length-1]);
+
+    } else{
+        onDesc = true;
+  
+        let index = headers.indexOf(heading);
+        sorts[index] = "sortDesc";
+
+        console.log(tableRowsJSON);
+
+        let values = getValues(heading);
+
+        bubbleSort(values);
+       
+        refreshTable();
+    }
+}
+
+function sortDesc(){
+        
+    for(let i = 0; i < sorts.length; i++){
+        sorts[i] = "sortAsc" ;
+    }
+
+    tableRowsStrings.reverse();
+
+    refreshTable();
+
+}
+
+function getValues(heading){
+    let values = [];
+    let c = 0;
+    for(let file in tableRowsJSON){
+        values[c] = tableRowsJSON[file][heading];
+        c++;
+    }
+    return values;
+}
 
 
+function refreshTable(){
+    let strTableVar = "";
+    strTableVar = "<div id =\"dirTable\">";
 
+    strTableVar += generateTableHeader();
+
+    for(let i = 0; i < tableRowsStrings.length; i++){
+        strTableVar += tableRowsStrings[i];
+    }
+
+
+    strTableVar += "<\/div>";
+
+    document.getElementById("dirTable").outerHTML = strTableVar;
+
+}
+
+//https://stackoverflow.com/questions/7502489/bubble-sort-algorithm-javascript
+function bubbleSort(values){
+
+    var swapped;
+    do {
+        swapped = false;
+        for (var i=0; i < values.length-1; i++) {
+            if (values[i] > values[i+1]) {
+                swap(i, values);
+                swap(i, tableRowsStrings);
+                swapped = true;
+            }
+        }
+    } while (swapped);
+
+}
+
+
+function swap(i, array){
+    var temp = array[i];
+    array[i] = array[i+1];
+    array[i+1] = temp;
+}
 
