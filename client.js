@@ -1,17 +1,15 @@
-var parent_dir;
-var current_dir;
+var dirHistory = [];
 
 
 makeRequest("/");
 getDirName();
-parent_dir = current_dir;
 
 
 function getDirName(){
     fetch("api/getDirName").
     then(res => res.text()).
     then(res => document.getElementById("dirName").innerHTML = res).
-    then(res => current_dir = res)
+    then(res => dirHistory[0] = res)
 }
 
 
@@ -24,10 +22,12 @@ function getHostName(){
 function makeRequest(dir){
 
     if(dir != "/"){
-        dir = current_dir + dir;
-        parent_dir = current_dir;
-        current_dir = dir;
-
+        if(dirHistory[dirHistory.length -1] != dir){
+            dir = dirHistory[dirHistory.length - 1] + dir;
+        
+            dirHistory[dirHistory.length] = dir;
+        }
+        
         document.getElementById("dirName").innerHTML = dir;
     }
 
@@ -97,7 +97,19 @@ function newDir(dir){
 }
 
 function prevDir(){
-    makeRequest(parent_dir);
+    let len = dirHistory.length;
+
+    if(len === 1){
+        dirHistory = [];
+        makeRequest("/");
+        getDirName();
+
+    } else{
+
+        dirHistory.pop();
+
+        makeRequest(dirHistory[dirHistory.length - 1]);
+    }
 }
 
 function generateTableHeader(){
