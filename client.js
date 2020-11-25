@@ -3,13 +3,16 @@ var dirHistory = [];
 
 makeRequest("/");
 getDirName();
+getHostName();
 
 
 function getDirName(){
     fetch("api/getDirName").
     then(res => res.text()).
     then(res => document.getElementById("dirName").innerHTML = res).
+    then(res => document.getElementById("dirNameGreen").innerHTML = res).
     then(res => dirHistory[0] = res)
+
 }
 
 
@@ -29,6 +32,7 @@ function makeRequest(dir){
         }
         
         document.getElementById("dirName").innerHTML = dir;
+        document.getElementById("dirNameGreen").innerHTML = dir;
     }
 
     const body = {
@@ -72,7 +76,7 @@ function makeRequest(dir){
                     
                     if(key === "filename" && directory === true){
                         //value = "<label id=\"dirButton\" onclick=\"newDir("+value+")\" >" + value + "<\/label>";
-                        value = "<label id=\"dirButton\" onclick=\"newDir('"+value+"')\" >" + value + "<\/label>";
+                        value = "<directory><label id=\"dirButton\" onclick=\"newDir('"+value+"')\" >" + value + "<\/label><\/directory>";
                     }
                     
                 
@@ -129,9 +133,24 @@ function generateTableHeader(){
 }
 
 
+function handleClick(checked, name) {
+    var column = document.getElementsByTagName(name);   
+    
+    if(checked){
+        
+        for(let i = 0; i < column.length; i++){
+            column[i].style.display = "";
+        }
 
+    
+    } else{
 
-
+       
+        for(let i = 0; i < column.length; i++){
+            column[i].style.display = "none";
+        }
+    }
+}
 
 
 
