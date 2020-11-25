@@ -73,8 +73,6 @@ app.post("/api", (req, res) => {
 	if(dir === "/")
 	dir += root;
 
-	
-	
 	const response = {
 		response: "dirinfo",
 		info: {
@@ -87,7 +85,7 @@ app.post("/api", (req, res) => {
 
 	let dirPath = dir_parent_path + dir;
 
-		
+
 	fs.readdirSync(dirPath).forEach(file => {
 		let fileInfo = getFileInfo(dirPath, file);
 		response["info"]["files"][file] = fileInfo;
