@@ -18,9 +18,17 @@
             Retreived directory: <label id="dirName">???</label>
         </p>
 
-        <button onclick="myFunction()">Up</button>
+        <button onclick="prevDir()">Up</button>
 
         <hr>
+
+        <p style = "color:blue">
+            server: <label id="hostname">???</label>
+        </p>
+
+        <p style = "color:green">
+            directory: <label id="dirNameGreen">???</label>
+        </p>
         
         <directory_list>
             <div id ="dirTable">
@@ -39,5 +47,14 @@
             
         </directory_list>
 
+        <hr>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"type");' checked>type</label>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"size");' checked>size</label>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"atime");' checked>atime</label>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"mtime");' checked>mtime</label>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"ctime");' checked>ctime</label>
+            <label><input type='checkbox' onclick='handleClick(this.checked,"birthtime");' checked>birthtime</label>
+
+        <hr>
     </body>
 </html>
